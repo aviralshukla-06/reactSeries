@@ -1,33 +1,52 @@
-import { useRef, useState, useEffect } from 'react'
+import { createContext, useState, useContext, Children } from 'react'
 
+const CountContext = createContext();
+
+function CountContextProvider({ children }) {
+  const [count, setCount] = useState(0);
+
+  return <CountContext.Provider value={{
+    count: count,
+    setCount: setCount
+  }}>
+    {children}
+  </CountContext.Provider>
+}
+
+function Parent() {
+  return (
+    <CountContextProvider>
+      <Increase />
+      <Decrease />
+      <Value />
+    </CountContextProvider>
+  )
+}
+
+function Increase() {
+  const { count, setCount } = useContext(CountContext);
+
+  return <button onClick={() => setCount(count => count + 1)}>Increase</button>
+}
+
+function Decrease() {
+  const { count, setCount } = useContext(CountContext);
+
+  return <button onClick={() => setCount(count => count - 1)}>Decrease</button>
+}
+function Value() {
+  const { count } = useContext(CountContext);
+
+  return <div>
+    Count : {count}
+  </div>
+}
 
 function App() {
-  const [timer, setTimer] = useState(0);
-  const value = useRef;
+  return <div>
+    <Parent />
+  </div>
 
-  function startClock() {
-    let currCount = setInterval(function () {
-      setTimer(c => c + 1)
-    }, 1000)
-    value.current = currCount;
-  }
-
-
-  function stopClock() {
-    clearInterval(value.current);
-  }
-
-
-  return (
-    <>
-      {timer}
-      <br />
-
-      <button onClick={startClock}>Start</button>
-      <button onClick={stopClock}>Stop</button>
-
-    </>
-  )
 }
 
 export default App
